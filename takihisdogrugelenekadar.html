@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ta ki "his doğru gelene" kadar — Ahmet Kemal Cavusoglu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f5;
+    --surface: #f2ede6;
+    --border: #e0d8cc;
+    --text: #1c1a17;
+    --muted: #7a7168;
+    --accent: #b85c2a;
+    --accent2: #2e6b5e;
+    --line: #c8bfb0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 400;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--accent);
+    z-index: 999;
+    transition: width 0.08s linear;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    background: rgba(250,248,245,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.9rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+  }
+
+  .nav-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .nav-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .article-wrap {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .article-header {
+    padding: 5rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  .tag-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25em 0.65em;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 2px;
+  }
+
+  .tag.hot {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(184,92,42,0.06);
+  }
+
+  h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+
+  .subtitle {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .author-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    color: white;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .author-info { display: flex; flex-direction: column; }
+
+  .author-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .author-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+
+  .read-time {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .article-body { padding-bottom: 5rem; }
+
+  .article-body p {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: #2e2b26;
+    margin-bottom: 1.6rem;
+  }
+
+  .article-body h2 {
+    font-family: 'Lora', serif;
+    font-size: 1.65rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text);
+    margin: 3rem 0 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  blockquote {
+    margin: 2.5rem 0;
+    padding: 1.5rem 2rem 1.5rem 1.75rem;
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: 0 4px 4px 0;
+  }
+
+  blockquote p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin: 0 0 0.5rem !important;
+  }
+
+  blockquote cite {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    font-style: normal;
+    letter-spacing: 0.06em;
+  }
+
+  .data-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.75rem 2rem;
+    margin: 2.5rem 0;
+  }
+
+  .data-box .data-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .data-item .big {
+    font-family: 'Lora', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .data-item .desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+    line-height: 1.4;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  .highlight-box {
+    background: rgba(184,92,42,0.06);
+    border: 1px solid rgba(184,92,42,0.2);
+    border-radius: 4px;
+    padding: 1.5rem 2rem;
+    margin: 2.5rem 0;
+  }
+
+  .highlight-box p {
+    font-size: 1rem !important;
+    margin: 0 !important;
+    color: var(--text) !important;
+  }
+
+  .article-footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 0;
+    margin-top: 1rem;
+  }
+
+  .share-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.25rem;
+    text-decoration: none;
+    border: 1px solid;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-primary:hover { background: #9e4e24; border-color: #9e4e24; }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-ghost:hover { border-color: var(--muted); }
+
+  .author-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .author-card .avatar { width: 56px; height: 56px; font-size: 1.2rem; }
+
+  .author-card-info .name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .author-card-info .bio {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 0.4rem;
+  }
+
+  .author-card-info .links {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .author-card-info .links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+  }
+
+  .author-card-info .links a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .author-card { flex-direction: column; gap: 1rem; }
+    nav { padding: 0.75rem 1rem; }
+    .article-wrap { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <a class="nav-brand" href="#">Ahmet Kemal Cavusoglu</a>
+  <span class="nav-meta">Haziran 2026</span>
+</nav>
+
+<main class="article-wrap">
+
+  <header class="article-header">
+    <div class="tag-row">
+      <span class="tag hot">Düşünce Yazısı</span>
+    </div>
+    <h1>ta ki "his doğru gelene" kadar</h1>
+    <p class="subtitle">Yapay zeka araçları hayatımızı kolaylaştırdı evet. Ama bir şeyler de silindi. Bu korku meslek ayırtmaksızın herkeste var. Ve bence kendimize karşı o kadar dürüst de değiliz.</p>
+    <div class="author-row">
+      <div class="avatar">AKC</div>
+      <div class="author-info">
+        <span class="author-name">Ahmet Kemal Cavusoglu</span>
+        <span class="author-sub">Senior Embedded Software Engineer</span>
+      </div>
+      <span class="read-time">~8 dk okuma</span>
+    </div>
+  </header>
+
+  <article class="article-body">
+
+    <p>Bir gün farkettim ki günlerdir kayda değer tek satır kod yazmamıştım. Elim direkt yapay zekaya yazdırmaya gidiyordu. Claude'a anlattım, onu zamanla bir arkadaş gibi görmeye başladım. Çıktıyı reviewladım, gerekirse düzelttim. Evet sonuç çalışıyordu ve kaliteli de görünüyordu. Başlarda güzel gelen bu his neredeyse 1 yılın sonunda artık rahatsızlık vermeye başladı.</p>
+
+    <p>"Ben ne yaptım burada aslında?" diye sordum kendime. Yönetici miyim artık? Operatör mü? Programlama bilgim hâlâ orada mı yoksa atıl duran bir kas gibi mi zayıflıyor?</p>
+
+    <p>Çok küçük yaşta blogcu.com'da, webmaster forumlarında takılırdım. Şimdilerde onların yerini Reddit ve X aldı. Yüzlerce geliştiricinin aynı soruyu sorduğunu gördüm. Hem rahatladım hem ürktüm.</p>
+
+    <h2>Bu His Sana Özgü Değil</h2>
+
+    <p>"Vibe coding" denen bir olgudan bahsediyoruz. Terimi Andrej Karpathy icat etti, OpenAI'nin kurucu üyesi, Tesla'nın eski AI direktörü. Tanımı şu: yapay zekaya tamamen teslim olup kodun var olduğunu bile unutmak. Bir şey bozulduğunda debug etmiyorsun; sadece yeni bir prompt yazıyorsun, ta ki "his doğru gelene" kadar.</p>
+
+    <blockquote>
+      <p>Bir programcı olarak hiç bu kadar geride kaldığımı hissetmemiştim. Meslek dramatik biçimde yeniden şekilleniyor; programcının katkısı giderek seyrelip aralıklı hale geliyor.</p>
+      <cite>Andrej Karpathy, X (Twitter), Aralık 2025</cite>
+    </blockquote>
+
+    <p>Karpathy bunu söylüyor. Yani konunun uzmanı, yapay zeka devriminin mimarlarından biri. Ve hâlâ geride kaldığını hissediyor. Bu, aslında şunu söylüyor: bu his bir yetersizlik değil. Bu, dönemin kendisidir.</p>
+
+    <div class="data-box">
+      <div class="data-label">// Rakamlar, 2025-2026</div>
+      <div class="data-grid">
+        <div class="data-item">
+          <div class="big">%17</div>
+          <div class="desc">Anthropic'in randomize çalışmasında AI kullanan geliştiricilerin kod kavrama testi düşüşü</div>
+        </div>
+        <div class="data-item">
+          <div class="big">%75</div>
+          <div class="desc">Google'ın Nisan 2026 itibarıyla yeni kodunun AI tarafından üretilme oranı</div>
+        </div>
+        <div class="data-item">
+          <div class="big">167</div>
+          <div class="desc">Business Insider anketine katılan yazılım mühendisi; %46'sı "ayak uydurabiliyorum" dedi</div>
+        </div>
+        <div class="data-item">
+          <div class="big">%17</div>
+          <div class="desc">Geliştiricilerin AI araçlarını tamamen reddetme oranı, çoğu sessizce</div>
+        </div>
+      </div>
+    </div>
+
+    <p>Bu sayılar çok şey anlatıyor. Google, Microsoft, Anthropic, dünyanın en büyük yazılım organizasyonları, kodun büyük çoğunluğunun artık makineler tarafından yazıldığını açıkça kabul ediyor.</p>
+
+    <h2>Bozulma Sessizce Olur</h2>
+
+    <p>Kimse bir sabah kalkıp "bugünden itibaren kod yazmayacağım" kararı almıyor. Süreç çok daha sinsice ilerliyor, fark ettirmeden.</p>
+
+    <p>Önce tekrar eden kalıp kod parçaları, yani boilerplate, için AI kullanıyorsun. Mantıklı, neden aynı import bloklarını, aynı class iskeletini, aynı hata yakalama yapılarını defalarca elden yazasın? Sonra biraz daha karmaşık bir şey için. Sonra bir hata çıktığında, bir dakika düşünmek yerine direkt soruyorsun. Sonra sprint baskısı altında minik bir feature için. Sonra fark ediyorsun ki son iki aydır tek başına bir şey yazmamışsın.</p>
+
+    <blockquote>
+      <p>Programcılar deneyimlerin kendilerini daha kötü yaptığını ve AI araçları olmadan işlerini etkili biçimde yapamayacaklarını fark ettiklerini söylüyor.</p>
+      <cite>TechSpot / 404 Media haberi, Mayıs 2026</cite>
+    </blockquote>
+
+    <p>Bunun bir adı var: bilişsel erozyon. Kaslar gibi. Kullanmadığın zaman köreliyor. Ve bu erozyonun özelliği şu: hissetmiyorsun, ta ki ihtiyaç duyduğun ana kadar.</p>
+
+    <h2>Hayalet Kararlar</h2>
+
+    <p>En tehlikeli nokta şu değil: AI kötü kod üretiyor. Tersine, genelde iyi üretiyor. Tehlikeli nokta şu: <em>anlamadan kabul ediyorsun.</em></p>
+
+    <p>Uzmanlar buna "ghost decisions", hayalet kararlar, diyor. Anlayamadığın kodu shipledikten sonra ne oluyor? Takım arkadaşın soruyor: "Bu neden böyle yapılmış?" Cevap veremiyorsun. Bir bug çıkıyor, tam olarak nerede bakacağını bilmiyorsun. Production'da bir şey patlıyor ve sistem davranışını modelleme yeteneğin yok.</p>
+
+    <div class="highlight-box">
+      <p>Üretilen kodun %95'i 2030'a kadar AI kaynaklı olacak. Microsoft CTO'sunun tahmini bu. Ama bu sayı, o kodu anlayan ve yönlendirebilen insanların ne kadar kritik olduğunu da gösteriyor.</p>
+    </div>
+
+    <h2>Peki Ya Çözüm?</h2>
+
+    <p>Dürüst olmak gerekirse, net bir çıkış yolu yok. Araçları bırakamazsın, rekabet bunu affetmiyor. Tamamen teslim olursan ise fark etmeden başka bir şeye dönüşüyorsun. İkisi arasındaki denge ise kimsenin tam tarif edemediği, herkese göre değişen belirsiz bir yer.</p>
+
+    <p>Belki yapılabilecek en dürüst şey şu: ne zaman anlamadan geçtiğini fark etmek. Her seferinde değil, her zaman mümkün de değil, ama zaman zaman dur demek. AI'ın verdiği çıktıya "neden böyle?" diye sormak. Sadece çalışıp çalışmadığını değil, neden çalıştığını merak etmek. Bu bir disiplin değil, daha çok bir alışkanlık ve alışkanlıklar zor kazanılır, kolay kaybedilir.</p>
+
+    <p>Bazıları haftada birkaç saat kasıtlı olarak AI'sız kod yazıyor. Bazıları bug'lara bakarken on dakika yalnız kalmayı bir kural haline getirmiş. Bunların işe yarayıp yaramadığını uzun vadede kimse bilmiyor. Belki sadece kendini iyi hissettiriyorlar. Belki gerçekten bir şeyleri koruyor.</p>
+
+    <p>Ya da belki mesleğin kendisi köklü biçimde değişiyor ve biz hâlâ eski tanımla "iyi geliştirici" olmaya çalışıyoruz. Bunu da bilmiyoruz.</p>
+
+    <h2>İtibar Sondadır</h2>
+
+    <p>Yazılımcının itibarı, yazdığı kodun çalışmasıyla değil, o kodun arkasında durabilmesiyle ölçülür. Bunu çok sonra öğrendim.</p>
+
+    <p>Bir sistem çöktüğünde, bir güvenlik açığı ortaya çıktığında, bir özellik beklenmedik biçimde davrandığında, soru şu olmuyor: "Bu kodu zamanında kim yazdı?" Soru şu oluyor: "Bu kodun kim sahaya çıkmasına izin verdi?" Ve o an, anlamadan geçirdiğin her satır sana geri dönüyor.</p>
+
+    <p>Bu, AI kullananları suçlamak için söylenmiyor. Aksine, araçların bu kadar hızlı ilerlediği bir dönemde imza atmak eskisinden çok daha ağır bir şey haline geldi. Çünkü artık üretim hızı arttı ama anlama sorumluluğu azalmadı. İkisi arasındaki makas açıldıkça, itibarın üzerine kurulu olduğu zemin inceliyor.</p>
+
+    <p>Geri kalanını zamanla göreceğiz.</p>
+
+    <hr class="divider">
+
+    <p style="font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--muted); margin: 0;">
+      Kaynaklar: Anthropic Randomized Controlled Trial (Ocak 2026) · TechSpot / 404 Media (Mayıs 2026) · Business Insider Developer Survey (2025) · Andrej Karpathy / X (Aralık 2025) · FinalRoundAI · AIBMag
+    </p>
+
+  </article>
+
+  <footer class="article-footer">
+    <div class="share-row">
+      <a class="btn btn-primary" href="https://www.linkedin.com/sharing/share-offsite/?url=" target="_blank">LinkedIn'de Paylaş</a>
+      <a class="btn btn-ghost" href="https://twitter.com/intent/tweet?text=ta+ki+his+dogru+gelene+kadar" target="_blank">X'te Paylaş</a>
+    </div>
+    <div class="author-card">
+      <div class="avatar">AKC</div>
+      <div class="author-card-info">
+        <div class="name">Ahmet Kemal Cavusoglu</div>
+        <div class="bio">Senior Embedded Software Engineer.</div>
+        <div class="links">
+          <a href="https://linkedin.com/in/ahmetkemalcavusoglu" target="_blank">LinkedIn →</a>
+          <a href="https://github.com/ahmetkcavusoglu" target="_blank">GitHub →</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const p = document.getElementById('progress');
+    const pct = scrollY / (document.body.scrollHeight - innerHeight) * 100;
+    p.style.width = Math.min(pct, 100) + '%';
+  });
+</script>
+
+</body>
+</html>
